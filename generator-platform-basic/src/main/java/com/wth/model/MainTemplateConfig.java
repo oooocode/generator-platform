@@ -13,12 +13,12 @@ public class MainTemplateConfig {
     /**
      * 作者
      */
-    private String author;
+    private String author = "ikun";
 
     /**
      * 输出内容
      */
-    private String outputText;
+    private String outputText = "输出内容";
 
     /**
      * 是否循环输出

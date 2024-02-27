@@ -5,10 +5,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @Author: wth
@@ -19,7 +17,7 @@ public class DynamicGenerator {
 
     public static void main(String[] args) throws IOException, TemplateException {
         String projectPath = System.getProperty("user.dir");
-        String inputPath = projectPath + File.separator + "generator-platform-basic" + File.separator + "src/main/resources/templates/MainTemplate.java.ftl";
+        String inputPath = projectPath + File.separator + "src/main/resources/templates/MainTemplate.java.ftl";
         String outputPath = projectPath + File.separator + "MainTemplate.java";
         MainTemplateConfig mainTemplateConfig = new MainTemplateConfig();
         mainTemplateConfig.setAuthor("wth");
@@ -41,7 +39,8 @@ public class DynamicGenerator {
         String templateName = new File(inputPath).getName();
         Template template = cfg.getTemplate(templateName);
         // 设置输出路径
-        Writer out = new FileWriter(outputPath);
+        FileOutputStream fileOutputStream = new FileOutputStream(outputPath);
+        Writer out = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
         // 合并数据模型和模版
         template.process(dataModel, out);
         // 关闭流

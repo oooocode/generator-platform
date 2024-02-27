@@ -17,8 +17,12 @@ public class StaticGenerator {
 
 
     public static void main(String[] args) {
+        // 获取整个项目的根路径
         String projectPath = System.getProperty("user.dir");
-        String inputPath = projectPath + File.separator + "generator-platform-demo-projects" + File.separator + "acm-template";
+        File parentFile = new File(projectPath).getParentFile();
+        // 输入路径：ACM 示例代码模板目录
+        String inputPath = new File(parentFile, "generator-platform-demo-projects/acm-template").getAbsolutePath();
+        // 输出路径：直接输出到项目的根目录
         String outputPath = projectPath;
         copyFilesByRecursive(inputPath, outputPath);
     }

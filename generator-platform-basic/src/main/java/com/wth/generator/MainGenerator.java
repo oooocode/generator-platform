@@ -12,19 +12,24 @@ import java.io.IOException;
  */
 public class MainGenerator {
 
-    public static void main(String[] args) throws TemplateException, IOException {
+    public static void execute(Object model) throws TemplateException, IOException {
         // 1.静态代码生成
         String projectPath = System.getProperty("user.dir");
-        String inputPath = projectPath + File.separator + "generator-platform-demo-projects" + File.separator + "acm-template";
+        File parentFile  = new File(projectPath).getParentFile();
+        String inputPath = new File(parentFile, "generator-platform-demo-projects" + File.separator + "acm-template").getAbsolutePath();
         String outputPath = projectPath;
         StaticGenerator.copyFilesByRecursive(inputPath, outputPath);
         // 2.动态代码生成
-        String dynamicInputPath = projectPath + File.separator + "generator-platform-basic" + File.separator + "src/main/resources/templates/MainTemplate.java.ftl";
-        String dynamicOutputPath = outputPath + File.separator + "acm-template/src/com/yupi/acm/MainTemplate.java";
+        String dynamicInputPath = projectPath + File.separator + "src/main/resources/templates/MainTemplate.java.ftl";
+        String dynamicOutputPath = outputPath + File.separator + "acm-template/src/com/wth/acm/MainTemplate.java";
+        DynamicGenerator.doGenerator(dynamicInputPath, dynamicOutputPath, model);
+    }
+
+    public static void main(String[] args) throws TemplateException, IOException {
         MainTemplateConfig mainTemplateConfig = new MainTemplateConfig();
-        mainTemplateConfig.setAuthor("wth");
-        mainTemplateConfig.setOutputText("123");
-        mainTemplateConfig.setLoop(true);
-        DynamicGenerator.doGenerator(dynamicInputPath, dynamicOutputPath, mainTemplateConfig);
+        mainTemplateConfig.setAuthor("yupi");
+        mainTemplateConfig.setLoop(false);
+        mainTemplateConfig.setOutputText("求和结果：");
+        execute(mainTemplateConfig);
     }
 }

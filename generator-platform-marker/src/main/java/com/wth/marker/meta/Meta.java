@@ -27,6 +27,8 @@ public class Meta {
     public static class FileConfig {
         private String inputRootPath;
         private String outputRootPath;
+        // 文件源地址
+        private String sourceRootPath;
         private String type;
         private List<FileInfo> files;
 

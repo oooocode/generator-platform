@@ -1,5 +1,6 @@
 package com.wth.marker.generator;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.StrUtil;
 import com.wth.marker.generator.file.DynamicFileGenerator;
@@ -14,7 +15,7 @@ import java.io.IOException;
  * @Author: wth
  * @Create: 2024/2/29 - 22:57
  */
-public class MainGenerator {
+public class CodeGenerator {
 
     public static void main(String[] args) throws TemplateException, IOException, InterruptedException {
         Meta meta = MetaManager.getMetaObject();
@@ -22,6 +23,12 @@ public class MainGenerator {
         // 输出的根路径
         String projectPath = System.getProperty("user.dir");
         String outputPath = projectPath + File.separator + "generated";
+
+        // 复制源代码文件
+        String sourceRootPath = meta.getFileConfig().getSourceRootPath();
+        String sourceOutputPath = outputPath + File.separator + ".source";
+        FileUtil.copy(sourceRootPath, sourceOutputPath, false);
+
         // 输入路径
         ClassPathResource classPathResource = new ClassPathResource("");
         String inputResourcePath = classPathResource.getAbsolutePath();

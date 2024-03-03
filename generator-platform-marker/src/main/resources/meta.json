@@ -6,8 +6,9 @@
   "author": "wth",
   "createTime": "2023-11-22",
   "fileConfig": {
-    "inputRootPath": "D:/workspace/generator-platform/generator-platform-demo-projects/acm-template-pro",
+    "inputRootPath": ".source/acm-template-pro",
     "outputRootPath": "generated",
+    "sourceRootPath": "D:/workspace/generator-platform/generator-platform-demo-projects/acm-template-pro",
     "type": "dir",
     "files": [
       {

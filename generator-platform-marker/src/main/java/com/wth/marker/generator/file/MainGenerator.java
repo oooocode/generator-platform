@@ -1,5 +1,7 @@
 package com.wth.marker.generator.file;
 
+import com.wth.marker.meta.Meta;
+import com.wth.marker.meta.MetaManager;
 import freemarker.template.TemplateException;
 
 import java.io.File;
@@ -22,7 +24,7 @@ public class MainGenerator {
 
         inputPath = new File(inputRootPath, ".gitignore").getAbsolutePath();
         outputPath = new File(outputRootPath, ".gitignore").getAbsolutePath();
-        DynamicFileGenerator.doGenerator(inputPath, outputPath, model);
+        DynamicFileGenerator.doGenerate(inputPath, outputPath, model);
 
         inputPath = new File(inputRootPath, "README.md").getAbsolutePath();
         outputPath = new File(outputRootPath, "README.md").getAbsolutePath();
@@ -32,6 +34,11 @@ public class MainGenerator {
         outputPath = new File(outputRootPath, "src/com/wth/acm/MainTemplate.java").getAbsolutePath();
         StaticFileGenerator.copyFileByHutool(inputPath, outputPath);
 
+    }
+
+    public static void main(String[] args) throws TemplateException, IOException {
+        Meta metaObject = MetaManager.getMetaObject();
+        execute(metaObject);
     }
 
 }

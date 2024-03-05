@@ -21,7 +21,7 @@ public class DynamicFileGenerator {
      * @throws IOException
      * @throws TemplateException
      */
-    public static void doGenerator(String inputPath, String outputPath, Object dataModel) throws IOException, TemplateException {
+    public static void doGenerate(String inputPath, String outputPath, Object dataModel) throws IOException, TemplateException {
         // 配置对象，参数为版本号
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_22);
         // 设置模版文件所在路径

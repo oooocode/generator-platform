@@ -30,6 +30,8 @@ public class MetaManager {
         String metaJson = ResourceUtil.readUtf8Str("meta.json");
         Meta metaInfo = JSONUtil.toBean(metaJson, Meta.class);
         System.out.println("metaInfo = " + metaInfo);
+        // 校验和填充meta信息
+        MetaValidator.doValidAndFill(metaInfo);
         return metaInfo;
     }
 }

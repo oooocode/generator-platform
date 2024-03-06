@@ -1,9 +1,10 @@
-package com.wth.marker.generator;
+package com.wth.marker.generator.main;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.StrUtil;
-import com.sun.org.apache.xml.internal.serializer.OutputPropertyUtils;
+import com.wth.marker.generator.JarGenerator;
+import com.wth.marker.generator.ScriptGenerator;
 import com.wth.marker.generator.file.DynamicFileGenerator;
 import com.wth.marker.meta.Meta;
 import com.wth.marker.meta.MetaManager;
@@ -13,24 +14,58 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * 代码生成模板
  * @Author: wth
- * @Create: 2024/2/29 - 22:57
+ * @Create: 2024/3/6 - 23:45
  */
-public class CodeGenerator {
+public abstract class GeneratorTemplate {
 
-    public static void main(String[] args) throws TemplateException, IOException, InterruptedException {
+    /**
+     * 生成代码
+     * @throws TemplateException
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public void doGenerate() throws TemplateException, IOException, InterruptedException {
         Meta meta = MetaManager.getMetaObject();
 
         // 输出的根路径
         String projectPath = System.getProperty("user.dir");
         String outputPath = projectPath + File.separator + "generated" + File.separator + meta.getName();
+        if (!FileUtil.exist(outputPath)) {
+            FileUtil.mkdir(outputPath);
+        }
 
-        // 复制源代码文件
-        String sourceRootPath = meta.getFileConfig().getSourceRootPath();
-        String sourceOutputPath = outputPath + File.separator + ".source";
-        FileUtil.copy(sourceRootPath, sourceOutputPath, false);
+        // 1. 复制源代码文件
+        String sourceOutputPath = copySource(meta, outputPath);
 
-        // 输入路径
+        // 2. 复制静态文件
+        generateCode(meta, outputPath);
+
+        // 3. 构建 Jar 包
+        String jarPath = buildJar(outputPath, meta);
+
+        // 4. 封装脚本
+        String shellOutputPath = buildScript(outputPath, jarPath);
+
+        // 5. 生成精简版代码生成器
+        buildDist(outputPath, sourceOutputPath, shellOutputPath, jarPath);
+
+    }
+
+    protected String buildScript(String outputPath, String jarPath) {
+        String scriptOutputPath = outputPath + File.separator + "generator";
+        ScriptGenerator.doGenerate(scriptOutputPath, jarPath);
+        return scriptOutputPath;
+    }
+
+    protected String buildJar(String outputPath, Meta meta) throws IOException, InterruptedException {
+        JarGenerator.doGenerate(outputPath);
+        String jarName = String.format("%s-%s-jar-with-dependencies.jar", meta.getName(), meta.getVersion());
+        return "target/" + jarName;
+    }
+
+    protected void generateCode(Meta meta, String outputPath) throws IOException, TemplateException {
         ClassPathResource classPathResource = new ClassPathResource("");
         String inputResourcePath = classPathResource.getAbsolutePath();
 
@@ -98,16 +133,16 @@ public class CodeGenerator {
         inputFilePath = inputResourcePath + File.separator + "templates/README.md.ftl";
         outputFilePath = outputPath + "/README.md";
         DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
+    }
 
-        // 构建 Jar 包
-        JarGenerator.doGenerate(outputPath);
-        // 封装脚本
-        String scriptOutputPath = outputPath + File.separator + "generator";
-        String jarName = String.format("%s-%s-jar-with-dependencies.jar", meta.getName(), meta.getVersion());
-        String jarPath = "target/" + jarName;
-        ScriptGenerator.doGenerate(scriptOutputPath, jarPath);
+    protected String copySource(Meta meta, String outputPath) {
+        String sourceRootPath = meta.getFileConfig().getSourceRootPath();
+        String sourceOutputPath = outputPath + File.separator + ".source";
+        FileUtil.copy(sourceRootPath, sourceOutputPath, false);
+        return sourceOutputPath;
+    }
 
-        // 代码生成器(精简版)
+    protected void buildDist(String outputPath, String sourceOutputPath, String scriptOutputPath, String jarPath) {
         String distOutputPath = outputPath +"-dist";
         // - jar包
         String outputTargetPath = distOutputPath + File.separator + "target";
@@ -119,6 +154,6 @@ public class CodeGenerator {
         FileUtil.copy(scriptOutputPath + ".bat", distOutputPath,true);
         // - .source文件
         FileUtil.copy(sourceOutputPath, distOutputPath, true);
-
     }
+
 }

@@ -9,19 +9,30 @@ import lombok.Data;
  */
 @Data
 public class DataModel {
-
     /**
-     * 作者
+     * 是否生成 .gitignore 文件
      */
-    private String author = "ikun";
-
+    public boolean needGit = false;
     /**
-     * 输出内容
+     * 是否生成循环
      */
-    private String outputText = "输出内容";
+    public boolean loop = false;
 
+    public MainTemplate mainTemplate = new MainTemplate();
     /**
-     * 是否循环输出
+     * 用于生成核心模板文件
      */
-    private Boolean loop;
+    @Data
+    public static class MainTemplate {
+
+        /**
+         * 作者注释
+         */
+        public String author = "yupi";
+
+        /**
+         * 输出信息
+         */
+        public String outputText = "sum = ";
+    }
 }

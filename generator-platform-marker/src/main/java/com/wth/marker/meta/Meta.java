@@ -59,6 +59,14 @@ public class Meta {
             private String description;
             private Object defaultValue;
             private String abbr;
+            private String groupKey;
+            private String groupName;
+            private List<ModelInfo> models;
+            private String condition;
+
+            // 中间参数
+            // 需要在命令行下拼接的参数
+            private String allArgsStr;
         }
     }
 }

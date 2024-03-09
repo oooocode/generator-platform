@@ -6,4 +6,8 @@ package com.wth.marker.generator.main;
  */
 public class CodeGenerator extends GeneratorTemplate {
 
+
+    @Override
+    protected void buildDist(String outputPath, String sourceOutputPath, String scriptOutputPath, String jarPath) {
+    }
 }

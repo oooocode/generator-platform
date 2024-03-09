@@ -11,6 +11,7 @@ import com.wth.marker.meta.enums.ModelTypeEnum;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 元信息校验
@@ -34,6 +35,15 @@ public class MetaValidator {
             return;
         }
         for (Meta.ModelConfig.ModelInfo modelInfo : modelInfoList) {
+            String groupKey = modelInfo.getGroupKey();
+            if (StrUtil.isNotEmpty(groupKey)) {
+                List<Meta.ModelConfig.ModelInfo> models = modelInfo.getModels();
+                String allArgsStr = models.stream()
+                        .map(model -> String.format("\"--%s\"", model.getFieldName()))
+                        .collect(Collectors.joining(","));
+                modelInfo.setAllArgsStr(allArgsStr);
+                continue;
+            }
             // 输出路径默认值
             String fieldName = modelInfo.getFieldName();
             if (StrUtil.isBlank(fieldName)) {
